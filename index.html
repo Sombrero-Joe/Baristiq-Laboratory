@@ -197,7 +197,7 @@ function updatePrepMode(f){if(!f)return;const mode=f.querySelector('#prepType')?
 function updatePrepTemplates(f){
  const drink=f.querySelector('#pd').value,sel=f.querySelector('#pt'),old=sel.value;
  const matches=rec().filter(r=>String(r.type||'').trim()===drink);
- sel.innerHTML='<option value="standard">Kein Rezept – Standardkonfiguration</option>'+matches.map(r=>{const shot=r.base?find(\'shots\',r.base):null;return \'<option value="\'+esc(r.id)+\'">\'+esc(r.name)+(shot?\' · Extraktion: \'+esc(shot.date||\'\')+\' · \'+esc(shl(shot)):\' · keine Extraktion zugeordnet\')+\'</option>\'}).join(\'\');
+ sel.innerHTML='<option value="standard">Kein Rezept – Standardkonfiguration</option>'+matches.map(r=>{const shot=r.base?find('shots',r.base):null;return '<option value="'+esc(r.id)+'">'+esc(r.name)+(shot?' · Extraktion: '+esc(shot.date||'')+' · '+esc(shl(shot)):' · keine Extraktion zugeordnet')+'</option>'}).join('');
  sel.value=matches.some(r=>r.id===old)?old:'standard';
 }
 function syncPrepWater(f){const sel=f.querySelector('#pwater');if(!sel)return;const template=f.querySelector('#pt').value,recipe=template!=='standard'?rec().find(r=>r.id===template):null,info=f.querySelector('#pwaterhelp');if(recipe){sel.value=recipe.preferredWaterId||'';if(info)info.textContent=recipe.preferredWaterId?'Bevorzugtes Wasser aus dem Rezept übernommen; hier änderbar.':'Im Rezept ist kein bevorzugtes Wasser hinterlegt; du kannst es hier auswählen.'}else if(info)info.textContent='Wähle das Wasser, das du bei dieser Zubereitung tatsächlich verwendest.';}
