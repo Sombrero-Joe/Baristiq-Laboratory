@@ -29,7 +29,7 @@ nav button.on{color:var(--ac);font-weight:600}nav button[data-v="brew"]{margin-l
 textarea{min-height:90px}.filelabel{font-size:16px;color:var(--fg);font-weight:600;margin-top:12px}.filelabel input[type=file]{display:block;font-size:16px;padding:12px;margin-top:6px;min-height:48px;width:100%}.filelabel input[type=file]::file-selector-button{font:inherit;font-size:18px;font-weight:600;padding:9px 14px;margin-right:12px;cursor:pointer}.data-actions [data-a="exp"]{margin-left:18px}
 #version{position:fixed;top:4px;right:7px;z-index:20;padding:2px 6px;border-radius:6px;background:var(--bg);color:var(--mut);font-size:10px;line-height:1.3;opacity:.85;pointer-events:none}
 </style></head><body><main id="app"></main><div id="ov" hidden></div>
-<div id="version">1.4.0 · LABORATORY</div><nav id="nav"></nav>
+<div id="version">1.5.0 · LABORATORY</div><nav id="nav"></nav>
 <script>
 const K='baristiq_lab_espresso-v1',EQ=['machines','portafilters','baskets','grinders','scales','brewers'];
 const T={
@@ -175,7 +175,7 @@ const METHODS={
 };
 const METHOD_GROUPS={'Percolation – Durchlaufverfahren':['Espresso','Handfilter','Mokkakanne','AeroPress (Percolation)'],'Immersion – Tauchverfahren':['French Press','AeroPress (Immersion)']};
 const methodConfig=k=>METHODS[k]||METHODS[(k||'').replace(' (Percolation)','').replace(' (Immersion)','')]||METHODS.Espresso;
-const methodOptions=selected=>Object.entries(METHOD_GROUPS).map(([g,ks])=>`<optgroup label="${g}">${ks.map(k=>`<option value="${k}"${(selected||'Espresso')==k?' selected':''}>${k}</option>`).join('')}</optgroup>`).join('');
+const methodOptions=selected=>Object.entries(METHOD_GROUPS).map(([g,ks])=>`<optgroup label="${g}">${ks.map(k=>`<option value="${k}"${(selected||'Espresso')==k?' selected':''}>${k==='Espresso'?'Espressomaschine':k}</option>`).join('')}</optgroup>`).join('');
 const recipeDrinkOptions=(method,selected,preserveUnknown=true)=>{const m=canonicalMethod(method||'Espresso'),base=m==='Espresso'?Object.keys(RP):m==='Handfilter'?['Filterkaffee','Eigene']:m==='French Press'?['French Press','Eigene']:(m||'').startsWith('AeroPress')?['AeroPress','Eigene']:m==='Mokkakanne'?['Mokka','Eigene']:['Kaffee','Eigene'];if(preserveUnknown&&selected&&!base.includes(selected))base.unshift(selected);return base.map(k=>`<option value="${esc(k)}"${selected===k?' selected':''}>${esc(k)}</option>`).join('')};
 
 const DRINKS=['Espresso','Ristretto','Lungo','Americano','Macchiato','Cortado','Flat White','Cappuccino','Café Latte','Latte Macchiato','Mocha','Affogato','Filterkaffee','French Press','AeroPress','Mokka','Eigene'];
@@ -331,7 +331,7 @@ function brewView(){
    '<div class="c"><b>Verbesserungshinweis</b><div>'+esc(prepSuggestion())+'</div><div class="m">Orientierung, keine sichere Diagnose. Möglichst nur eine Variable auf einmal ändern.</div></div>';
  }
  const dr=DRINKS,activePrep=prepEdit?db.preps.find(p=>p.id===prepEdit):null,selectedPrepType=activePrep?.prepType||'beans';
- return '<h1>'+(prepEdit?'Zubereitung bearbeiten':'Neue Zubereitung')+'</h1><div class="row"><button data-a="preplist">Zurück zur Übersicht</button></div><div class="c"><form id="pf">'+
+ return '<h1>'+(prepEdit?'Zubereitung bearbeiten':'Neue Zubereitung')+'</h1><div class="c"><form id="pf">'+
  ''+
  '<label>Art der Zubereitung<select name="prepType" id="prepType"><option value="beans"'+(selectedPrepType==='beans'?' selected':'')+'>Rezepte mit Bohnen</option><option value="capsule"'+(selectedPrepType==='capsule'?' selected':'')+'>Kapsel-/Softsysteme</option></select></label>'+ '<div data-prep-bean-section><label>Zubereitungsart<select name="method" id="pm">'+methodOptions()+'</select></label></div>'+
  '<label>Getränkeart<select name="drink" id="pd">'+dr.map(x=>'<option'+(x===methodConfig('Espresso').drink?' selected':'')+'>'+x+'</option>').join('')+'</select></label>'+
@@ -343,7 +343,7 @@ function brewView(){
  '<div class="row" data-prep-bean-section><button type="button" data-a="show-components">+ Weitere Komponente hinzufügen</button><button type="button" data-a="save-drink-standard">Standard-Vorgabe speichern</button></div><div class="c" id="componentPanel" hidden><b>Weitere Getränkekomponenten</b><div class="m">Wasser, Milch, Milchschaum und eigene Zutaten. Nicht benötigte Komponenten bleiben ausgeblendet.</div><b>Kaffee-Komponenten</b><div class="row"><button type="button" data-a="add-shot-component" data-prep-bean-section>+ Bohnenextraktion</button>'+db.coffeeProducts.filter(p=>p.active!==false).map(p=>'<button type="button" data-a="add-coffee-component" data-id="'+p.id+'">+ '+esc(p.name)+' ('+esc(p.kind)+')</button>').join('')+'</div><b>Weitere Zutaten</b><div class="row">'+STANDARD_COMPONENTS.map(n=>'<button type="button" data-a="add-component" data-kind="'+n+'">+ '+n+'</button>').join('')+'<button type="button" data-a="add-component" data-kind="">+ Eigene Komponente</button>'+db.components.filter(c=>c.active!==false&&c.custom===true&&!STANDARD_COMPONENTS.includes(c.name)).map(c=>'<button type="button" data-a="add-component" data-kind="'+esc(c.name)+'">+ '+esc(c.name)+'</button>').join('')+'</div><div class="row"><input id="newUnitName" placeholder="Eigene Einheit, z. B. TL"><button type="button" data-a="save-custom-unit">Einheit hinzufügen</button></div><div id="componentRows"></div></div>'+'<div class="c"><b>Geschmackliche Bewertung</b><div class="m">Wie gefällt mir der Espresso insgesamt? Wie schmeckt er mir persönlich?</div><label>Welche Beschreibung trifft auf meinen Geschmack zu?</label><div class="g">'+['sauer','bitter','dünn','wässrig','zu kräftig','körperreich','süß','ausgewogen','adstringierend','flach','lecker'].map(x=>'<label><input type="checkbox" name="taste" value="'+x+'" style="width:auto"> '+x+'</label>').join('')+'</div>'+
  '<label>Persönliche Gesamtbewertung: <span id="prate">7</span>/10<input name="rate" type="range" min="1" max="10" value="7"></label></div>'+
  sensoryForm()+'<label>Notizen<textarea name="note"></textarea></label>'+
- '<div class="row"><button class="p" type="submit">'+(prepEdit?'Änderungen speichern':'Zubereitung speichern')+'</button></div></form></div>';
+ '<div class="row"><button class="p" type="submit">'+(prepEdit?'Änderungen speichern':'Zubereitung speichern')+'</button><button type="button" data-a="preplist">Abbrechen</button></div></form></div>';
 }
 
 const RP={
