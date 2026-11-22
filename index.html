@@ -267,6 +267,7 @@ function addComponentRow(form,component=''){
  const item=typeof component==='string'?{name:component,unit:'ml'}:component;
  rows.insertAdjacentHTML('beforeend',componentRowHtml(item));
  form.querySelector('#componentPanel').hidden=false;
+ updateDrinkVolumeEstimate(form);
 }
 function updateDrinkVolumeEstimate(form){
  const capsule=form.querySelector('#prepType')?.value==='capsule';
@@ -325,7 +326,7 @@ function updateCoffeeMode(form){
 function capsuleProductRowHtml(c={}){
  const product=db.coffeeProducts.find(p=>String(p.id)===String(c.coffeeProductId));
  const name=product?.name||c.coffeeProductNameSnapshot||c.name||'Kapsel-/Softprodukt';
- return '<div class="c component-row" data-component-row data-capsule-product-row><input type="hidden" data-component-product-id value="'+esc(c.coffeeProductId||'')+'"><input type="hidden" data-component-name value="'+esc(name)+'"><div><b>'+esc(name)+'</b><div class="m">'+esc(product?.kind||c.kind||'Kapsel-/Softprodukt')+'</div></div><div class="g"><label>Anzahl (Stück)<input data-component-quantity type="number" min="1" step="1" value="'+esc(c.quantity??1)+'"></label><label>Getränkemenge pro Stück (ml)<input data-component-drink-volume type="number" min="0.1" step="any" value="'+esc(c.unitDrinkVolume??product?.recommendedCup??'')+'" placeholder="Bitte ergänzen"></label></div><input type="hidden" data-component-unit value="Stück"><input type="hidden" data-component-temperature-min value=""><input type="hidden" data-component-temperature-max value=""><div class="m">Der Produktstandard wird übernommen und kann für diese Zubereitung angepasst werden.</div><div class="row"><button type="button" data-a="remove-component">Entfernen</button></div></div>';
+ return '<div class="c component-row" data-component-row data-capsule-product-row><input type="hidden" data-component-product-id value="'+esc(c.coffeeProductId||'')+'"><input type="hidden" data-component-name value="'+esc(name)+'"><div><b>'+esc(name)+'</b><div class="m">'+esc(product?.kind||c.kind||'Kapsel-/Softprodukt')+'</div></div><div class="g"><label>Anzahl (Stück)<input data-component-quantity type="number" min="1" step="1" value="'+esc(c.quantity??1)+'"></label><label>Getränkemenge pro Stück (ml)<input data-component-drink-volume type="number" min="0.1" step="any" value="'+esc(c.unitDrinkVolume!==''&&c.unitDrinkVolume!=null?c.unitDrinkVolume:(product?.recommendedCup??''))+'" placeholder="Bitte ergänzen"></label></div><input type="hidden" data-component-unit value="Stück"><input type="hidden" data-component-temperature-min value=""><input type="hidden" data-component-temperature-max value=""><div class="m">Der Produktstandard wird übernommen und kann für diese Zubereitung angepasst werden.</div><div class="row"><button type="button" data-a="remove-component">Entfernen</button></div></div>';
 }
 function updateCoffeeCompatibility(form){
  const target=form?.querySelector('#coffeeCompatibility'),machineId=form?.querySelector('#coffeeMachine')?.value;
