@@ -709,7 +709,7 @@ document.addEventListener('pointerdown',e=>{
  if(!source)return;
  const parent=source.parentElement;
  prepPointerDrag={pointerId:e.pointerId,handle,source,parent,startX:e.clientX,startY:e.clientY,moved:false,original:[...parent.querySelectorAll(':scope > [data-prep-card]')]};
- source.setAttribute('aria-grabbed,'true');
+ source.setAttribute('aria-grabbed','true');
  handle.classList.add('is-dragging');
  try{handle.setPointerCapture(e.pointerId)}catch(_){}
  e.preventDefault();
