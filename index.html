@@ -511,8 +511,8 @@ function brewView(){
   const list=db.preps.slice();
   const drinkOrder=DRINKS;
   const sortGroup=items=>items.slice().sort((x,y)=>{
-   const ax=Number.isFinite(Number(x.sortOrder))?Number(x.sortOrder):Infinity;
-   const ay=Number.isFinite(Number(y.sortOrder))?Number(y.sortOrder):Infinity;
+   const ax=x.sortOrder!==undefined&&x.sortOrder!==null&&x.sortOrder!==''&&Number.isFinite(Number(x.sortOrder))?Number(x.sortOrder):Infinity;
+   const ay=y.sortOrder!==undefined&&y.sortOrder!==null&&y.sortOrder!==''&&Number.isFinite(Number(y.sortOrder))?Number(y.sortOrder):Infinity;
    if(ax!==ay)return ax-ay;
    return (String(y.date||'')+' '+String(y.performedTime||'')).localeCompare(String(x.date||'')+' '+String(x.performedTime||''));
   });
