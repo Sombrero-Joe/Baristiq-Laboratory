@@ -366,7 +366,7 @@ function prepRecordDeviceId(p){
  if(!p)return '';
  if(p.deviceId)return String(p.deviceId);
  if(p.method==='Vollautomat'||p.deviceType==='Vollautomat')return String(p.automaticMachineId||'');
- const shot=p.shotId?find('shots',p.shotId):p.shotSnapshot;
+ const componentShotId=p.components?.find(c=>c.shotId)?.shotId,shot=p.shotId?find('shots',p.shotId):(componentShotId?find('shots',componentShotId):p.shotSnapshot);
  if(shot)return String(p.deviceType==='Siebträgermaschine'||p.method==='Siebträgermaschine'?shot.machines||'':shot.brewers||'');
  return '';
 }
